@@ -1,0 +1,61 @@
+﻿# Find All Numbers Disappeared in an Array
+
+标签（空格分隔）： leetcode
+
+---
+
+给一个长度为n的数组，包含n个[1,n]之间的数字，有些数字会出现两次，所以有些数字会缺失，比如：
+```
+Input:
+[4,3,2,7,8,2,3,1]
+
+Output:
+[5,6]
+```
+
+请找出缺失的数字，时间复杂度为O(n),不占用其他空间。
+
+## 思路
+
+这题我没有很好的思路，基本时间复杂度都是O(n<sup>2</sup>)，所以在数据很多的时候会超时，本次介绍比较热门的一种算法。主要思想是nums[num[i] - 1] = -nums[nums[i] - 1]。
+
+> 1. 将数组中的每一项的值减去1作为索引（减去1是因为最后一项会越界），比如nums[i] - 1，将数组中这个索引的值变为负数，如果这个值已经是负数了，那么不变。
+> 2. 遍历数组，则正数项的索引+1则为缺失的数。
+
+比如
+```
+nums = [1, 1, 2, 4] //转换前 
+nums[nums[0] - 1] = -nums[nums[0] - 1] // [-1, 1, 2, 4]
+nums[nums[1] - 1] = nums[nums[1] - 1] // 因为第一项已经是负数 [-1, 1, 2, 4]
+nums[nums[2] - 1] = -nums[nums[2] - 1] // [-1, -1, 2, 4]
+nums[nums[3] - 1] = -nums[nums[3] - 1] // [-1, -1, 2, -4]
+nums = [-1, -1, 2, -4] //则转换后
+output = nums.indexOf(2)+1 = 3;
+```
+
+## 代码
+```js
+/**
+ * @param {number[]} nums
+ * @return {number[]}
+ */
+var findDisappearedNumbers = function(nums) {
+    var result = [];
+    // 负数
+    for(var i=0;i<nums.length;i++) {
+        //因为当前值可能已经变成负数了，所以需要绝对值
+        var index = Math.abs(nums[i]) - 1;
+        //判断是否为正数
+        if(nums[index] > 0) {
+            nums[index] = -nums[index];
+        }
+    }
+    // 寻找正数
+    for(var j=0;j<nums.length;j++) {
+        if(nums[j] > 0) {
+            result.push(j+1);
+        }
+    }
+    return result;
+};
+```
